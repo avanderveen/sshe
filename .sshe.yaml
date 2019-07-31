@@ -1,0 +1,6 @@
+ssh:
+  # key: /home/user/.ssh/ec2.pem
+  # user: ubuntu
+aws:
+  # profile: default
+  # region: us-east-1
