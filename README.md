@@ -32,7 +32,7 @@ Config Key | CLI Argument | Description
 `ssh.key` | `-k`<br/>`--ssh-key` | SSH key to use.<br/>If unspecified, `sshe` will use the key assigned to the instance, under the path `~/.ssh/<assigned key>.pem`.
 `ssh.user` | `-u`<br/>`--ssh-user` | SSH user to connect as.<br/>Must be specified either in the config or as a CLI argument.
 `aws.profile` | `-p`<br/>`--aws-profile` | AWS profile to use with the CLI.<br/>If unspecified, uses the default profile.
-`aws.region` | `-r,`<br/>`--aws-region` | AWS region to search in.<br/>If unspecified, uses the default region for the AWS profile.
+`aws.region` | `-r`<br/>`--aws-region` | AWS region to search in.<br/>If unspecified, uses the default region for the AWS profile.
 
 ## Future
 
