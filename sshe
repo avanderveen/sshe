@@ -72,6 +72,42 @@ class SSHKeyNotFoundError < ExpectedError
     def to_s; "File not found for SSH key: #{@key}"; end
 end
 
+# Cross-platform way of finding an executable in the $PATH.
+#
+#   which('ruby') #=> /usr/bin/ruby
+def which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+      exts.each { |ext|
+        exe = File.join(path, "#{cmd}#{ext}")
+        return exe if File.executable?(exe) && !File.directory?(exe)
+      }
+    end
+    return nil
+end
+
+def chooseDialog(menuOptions)
+    height = `tput lines`.strip
+    width = `tput cols`.strip
+    menuHeight = menuOptions.length
+    tags = menuOptions.keys.map {|key| "\"#{key}\""}.join(" ")
+    return `dialog --output-fd 1 --no-items --menu "Running instances" #{height} #{width} #{menuHeight} #{tags}`
+end
+
+def chooseTextMenu(menuOptions)
+    puts "\nRunning Instances\n"
+    textMenu = menuOptions.keys.map.with_index do |item, index|
+        "#{index}. #{item}"
+    end.join("\n")
+    puts textMenu
+    puts "\nSelect option #"
+    
+    picked = gets
+    index = picked.to_i
+
+    return menuOptions.keys[index]
+end
+
 def main(args)
     options = get_options(get_config(), args)
     profile = options.aws.profile ? "--profile #{options.aws.profile}" : ""
@@ -88,13 +124,18 @@ def main(args)
         [name || id, {url: url, key: key}]
     end.flatten]
 
-    height = `tput lines`.strip
-    width = `tput cols`.strip
-    menuHeight = menuOptions.length
-    tags = menuOptions.keys.map {|key| "\"#{key}\""}.join(" ")
-    choice = `dialog --output-fd 1 --no-items --menu "Running instances" #{height} #{width} #{menuHeight} #{tags}`
+    choice = nil
+
+    if (which("dialog"))
+        choice = chooseDialog(menuOptions)
+    else
+        choice = chooseTextMenu(menuOptions)
+    end
 
     raise CancelledError if not menuOptions.has_key?(choice)
+
+    puts "\nAttempting connection to: #{choice}\n"
+
     url = menuOptions[choice][:url]
     key = options.ssh.key || "#{Dir.home}/.ssh/#{menuOptions[choice][:key]}.pem"
     user = options.ssh.user
@@ -109,6 +150,7 @@ def main(args)
 end
 
 begin
+    STDOUT.sync = true
     main(ARGV)
 rescue ExpectedError => expected
     puts expected

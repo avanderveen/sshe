@@ -6,7 +6,14 @@ Just pick your instance from a list. No need to look up the URL in the AWS Conso
 
 ## Installation
 
-Just put `sshe` somewhere on your path and make sure you have the AWS CLI installed and configured.
+### Pre-requisites
+* Ruby
+* AWS CLI (installed and configured)
+
+### Install
+* Put `sshe` somewhere on your path
+* Put .sshe.yaml in your home directory
+* Configure .sshe.yaml
 
 ## Usage
 
