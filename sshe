@@ -124,12 +124,10 @@ def main(args)
         [name || id, {url: url, key: key}]
     end.flatten]
 
-    choice = nil
-
-    if (which("dialog"))
-        choice = chooseDialog(menuOptions)
+    choice = if (which("dialog"))
+        chooseDialog(menuOptions)
     else
-        choice = chooseTextMenu(menuOptions)
+        chooseTextMenu(menuOptions)
     end
 
     raise CancelledError if not menuOptions.has_key?(choice)
