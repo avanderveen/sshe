@@ -49,3 +49,7 @@ Config Key | CLI Argument | Description
 ## Contributing
 
 Just fire off a PR. There are no rules yet.
+
+### Contributors
+
+* [Mike Parkhill](https://github.com/mike-parkhill): Thanks for adding Windows support!
